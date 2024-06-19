@@ -1,0 +1,68 @@
+-- Employee Table
+CREATE TABLE Employee (
+    ID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    DOB DATE,
+    PhoneNo VARCHAR(15),
+    Designation VARCHAR(50),
+    EmployerID INT,
+    FOREIGN KEY (EmployerID) REFERENCES Employer(ID)
+);
+
+-- Employer Table
+CREATE TABLE Employer (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Designation VARCHAR(50),
+    PhoneNo VARCHAR(15),
+    Department VARCHAR(50)
+);
+
+-- Salary Table
+CREATE TABLE Salary (
+    EmployeeID INT,
+    Basic DECIMAL(10, 2),
+    HRA DECIMAL(10, 2),
+    TA DECIMAL(10, 2),
+    DA DECIMAL(10, 2),
+    MedicalAllowance DECIMAL(10, 2),
+    Incentive DECIMAL(10, 2),
+    PRIMARY KEY (EmployeeID),
+    FOREIGN KEY (EmployeeID) REFERENCES Employee(ID)
+);
+
+
+
+-- Insert into Employer Table
+INSERT INTO Employer (ID, Name, Designation, PhoneNo, Department) VALUES
+(1, 'Company A', 'Manager', '1234567890', 'HR'),
+(2, 'Company B', 'Director', '0987654321', 'Finance');
+
+-- Insert into Employee Table
+INSERT INTO Employee (ID, FirstName, LastName, DOB, PhoneNo, Designation, EmployerID) VALUES
+(1, 'John', 'Doe', '1985-01-01', '5551234567', 'Developer', 1),
+(2, 'Jane', 'Smith', '1990-02-02', '5559876543', 'Analyst', 2);
+
+-- Insert into Salary Table
+INSERT INTO Salary (EmployeeID, Basic, HRA, TA, DA, MedicalAllowance, Incentive) VALUES
+(1, 50000, 10000, 5000, 2000, 1500, 3000),
+(2, 60000, 12000, 6000, 2500, 2000, 3500);
+
+-- List all Employees with their Employer Details:
+  
+SELECT e.FirstName, e.LastName, e.Designation, emp.Name AS EmployerName, emp.Department
+FROM Employee e
+JOIN Employer emp ON e.EmployerID = emp.ID;
+-- Retrieve Salary Details for a Specific Employee:
+
+SELECT e.FirstName, e.LastName, s.Basic, s.HRA, s.TA, s.DA, s.MedicalAllowance, s.Incentive
+FROM Employee e
+JOIN Salary s ON e.ID = s.EmployeeID
+WHERE e.ID = 1; -- Replace 1 with the specific Employee ID
+-- Total Salary Calculation for Each Employee:
+
+SELECT e.FirstName, e.LastName, 
+    (s.Basic + s.HRA + s.TA + s.DA + s.MedicalAllowance + s.Incentive) AS TotalSalary
+FROM Employee e
+JOIN Salary s ON e.ID = s.EmployeeID;
